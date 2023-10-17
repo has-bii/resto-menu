@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+
+  app:
+    container_name: RestoMenu
+    image: hasbii/resto-menu:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - db-network
+
+networks:
+  db-network:
+    external: true
+    name: db-network
