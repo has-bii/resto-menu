@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
     push:
-        branches: 
+        branches:
             - "main"
 
 jobs:
@@ -13,6 +13,13 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      hasbii/resto-menu
+
             - name: Login to Docker Hub
               uses: docker/login-action@v2
               with:
@@ -22,16 +29,10 @@ jobs:
             - name: Build and push Frontend App
               uses: docker/build-push-action@v5
               with:
-                  context: ./frontend
+                  context: ./
                   push: true
-                  tags: hasbii/resto-menu-fe:latest
-
-            - name: Build and push Backend App
-              uses: docker/build-push-action@v5
-              with:
-                  context: ./backend
-                  push: true
-                  tags: hasbii/resto-menu-be:latest
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
 
     deploy:
         runs-on: ubuntu-latest
