@@ -1,0 +1,76 @@
+name: Build and Deploy
+
+on:
+    push:
+        branches: 
+            - "main"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      hasbii/resto-menu
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+
+            - name: Build and push Frontend App
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./frontend
+                  file: ./Dockerfile
+                  push: true
+                  tags: hasbii/resto-menu-fe:latest
+                  labels: ${{ steps.meta.outputs.labels }}
+
+            - name: Build and push Backend App
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend
+                  file: ./Dockerfile
+                  push: true
+                  tags: hasbii/resto-menu-be:latest
+                  labels: ${{ steps.meta.outputs.labels }}
+
+    deploy:
+        runs-on: ubuntu-latest
+
+        needs: build
+
+        steps:
+            - name: SSH & Docker run Backend
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SERVER_USERNAME }}
+                  key: ${{ secrets.SSH_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      docker stop MenuRestoBE || true
+                      docker rm MenuRestoBE || true
+                      docker run --name MenuRestoBE --network db-network --restart=always -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e FE_URL=${{ secrets.FE_URL }} -d hasbii/resto-menu-be:latest
+                      docker exec MenuRestoBE npx prisma migrate deploy
+
+            - name: SSH & Docker run Frontend
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SERVER_USERNAME }}
+                  key: ${{ secrets.SSH_KEY }}
+                  port: ${{ secrets.SSH_PORT }}
+                  script: |
+                      docker stop MenuRestoFE || true
+                      docker rm MenuRestoFE || true
+                      docker run --name MenuRestoFE --restart=always -p 82:80 -e VITE_API_URL=${{ secrets.API_URL }} -d hasbii/resto-menu-fe:latest
