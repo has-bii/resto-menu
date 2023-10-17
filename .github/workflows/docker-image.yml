@@ -23,7 +23,6 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: ./frontend
-                  dockerfile: ./Dockerfile
                   push: true
                   tags: hasbii/resto-menu-fe:latest
 
@@ -31,7 +30,6 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: ./backend
-                  dockerfile: ./Dockerfile
                   push: true
                   tags: hasbii/resto-menu-be:latest
 
