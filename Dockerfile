@@ -17,10 +17,10 @@ RUN npm run build
 FROM nginx:alpine
 WORKDIR /app
 COPY --from=buildfe /app/dist /usr/share/nginx/html
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/key ./key
-COPY --from=build /app/package*.json ./
+COPY --from=buildbe /app/dist ./dist
+COPY --from=buildbe /app/prisma ./prisma
+COPY --from=buildbe /app/key ./key
+COPY --from=buildbe /app/package*.json ./
 COPY supervisord.conf ./
 RUN npm install
 RUN npx prisma generate
