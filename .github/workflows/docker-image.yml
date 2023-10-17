@@ -30,7 +30,7 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: ./frontend
-                  file: ./Dockerfile
+                  dockerfile: ./Dockerfile
                   push: true
                   tags: hasbii/resto-menu-fe:latest
                   labels: ${{ steps.meta.outputs.labels }}
@@ -39,7 +39,7 @@ jobs:
               uses: docker/build-push-action@v5
               with:
                   context: ./backend
-                  file: ./Dockerfile
+                  dockerfile: ./Dockerfile
                   push: true
                   tags: hasbii/resto-menu-be:latest
                   labels: ${{ steps.meta.outputs.labels }}
