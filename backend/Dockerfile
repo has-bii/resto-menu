@@ -2,10 +2,10 @@ FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install 
+COPY . .
 RUN npm run generate-key
 RUN npx prisma generate
 RUN npm run build
-COPY . .
 
 FROM node:18-alpine
 WORKDIR /app
