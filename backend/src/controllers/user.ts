@@ -3,10 +3,10 @@ import { IUser } from "../types/global"
 import prisma from "../lib/prisma"
 import bcrypt from "bcrypt"
 import { env } from "../lib/env"
-import { Role } from "@prisma/client"
 import { UploadedFile } from "express-fileupload"
 import { existsSync, unlinkSync } from "fs"
 import KEY from "../utils/key"
+import { Role } from "@prisma/client"
 
 const USER = prisma.user
 
@@ -127,8 +127,8 @@ class UsersController {
                 .then(() => {
                     return res.status(200).json({ message: "User has been updated" })
                 })
-                .catch((err) => {
-                    console.error("Failed to update user!", err)
+                .catch((error: any) => {
+                    console.error("Failed to update user!", error)
                     return res.status(500).json({ message: "Failed to updated user!" })
                 })
         } catch (error) {
