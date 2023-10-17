@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
-import { env } from "../lib/env"
 import prisma from "../lib/prisma"
+import KEY from "../utils/key"
 
 const USER = prisma.user
 const TOKEN = prisma.token
@@ -16,7 +16,7 @@ class Middleware {
             }
 
             // Verifying token
-            const jwtPayload: any = jwt.verify(req.cookies.user_access, env.SECRET_KEY)
+            const jwtPayload: any = jwt.verify(req.cookies.user_access, KEY.getSecret())
 
             // Find user
             const user = await USER.findUnique({

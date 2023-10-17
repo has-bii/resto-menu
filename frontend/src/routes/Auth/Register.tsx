@@ -4,7 +4,7 @@ import { faCircleNotch, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-ic
 import { FormEvent, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import image from "../../images/register-img.jpg"
-import axios from "axios"
+import axios from "../../lib/axios"
 import { useToast } from "../../providers/ToastProvider"
 
 export default function Register() {
@@ -68,7 +68,7 @@ export default function Register() {
         setLoading(true)
 
         await axios
-            .post("/api/auth/register", formData)
+            .post("/auth/register", formData)
             .then((res) => {
                 pushToast(res.data.message, "success")
                 navigate("/auth")

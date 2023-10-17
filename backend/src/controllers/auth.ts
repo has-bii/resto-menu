@@ -3,6 +3,7 @@ import prisma from "../lib/prisma"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { env } from "../lib/env"
+import KEY from "../utils/key"
 
 interface IUserReq {
     email: string
@@ -46,7 +47,7 @@ class AuthController {
                 data: {
                     name: user.name,
                     email: user.email,
-                    password: bcrypt.hashSync(user.password, env.SALT),
+                    password: bcrypt.hashSync(user.password, KEY.getSalt()),
                 },
             }).catch((error: any) => {
                 throw new Error(`Failed to create new user\nError: ${error}`)
@@ -92,7 +93,7 @@ class AuthController {
             // Create token
             const token = jwt.sign(
                 { id: data.id, name: data.name, email: data.email },
-                env.SECRET_KEY,
+                KEY.getSecret(),
                 { algorithm: "HS256" }
             )
 

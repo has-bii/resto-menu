@@ -6,6 +6,7 @@ import { env } from "../lib/env"
 import { Role } from "@prisma/client"
 import { UploadedFile } from "express-fileupload"
 import { existsSync, unlinkSync } from "fs"
+import KEY from "../utils/key"
 
 const USER = prisma.user
 
@@ -117,7 +118,7 @@ class UsersController {
                         name: body.name ? body.name : userRecord.name,
                         email: body.email ? body.email : userRecord.email,
                         password: body.password
-                            ? bcrypt.hashSync(body.password, env.SALT)
+                            ? bcrypt.hashSync(body.password, KEY.getSalt())
                             : userRecord.password,
                         picture: uploadPath ? uploadPath : userRecord.picture,
                         updatedAt: new Date(),

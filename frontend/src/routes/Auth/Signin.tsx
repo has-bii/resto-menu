@@ -4,7 +4,7 @@ import { faCircleNotch, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-ic
 import { FormEvent, useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import image from "../../images/register-img.jpg"
-import axios from "axios"
+import axios from "../../lib/axios"
 import { useToast } from "../../providers/ToastProvider"
 
 type FormData = {
@@ -18,8 +18,14 @@ export default function Signin() {
     const { pushToast } = useToast()
     const [showPassword, setShowPassword] = useState(false)
     const [save, setSave] = useState(false)
-    const [formData, setFormData] = useState<FormData>({ email: "", password: "" })
-    const [formValidation, setFormValidation] = useState<FormData>({ email: "", password: "" })
+    const [formData, setFormData] = useState<FormData>({
+        email: "",
+        password: "",
+    })
+    const [formValidation, setFormValidation] = useState<FormData>({
+        email: "",
+        password: "",
+    })
 
     useEffect(() => {
         setFormValidation({ email: "", password: "" })
@@ -44,7 +50,7 @@ export default function Signin() {
         setLoading(true)
 
         await axios
-            .post("/api/auth/login", { ...formData, save })
+            .post("/auth/login", { ...formData, save })
             .then((res) => {
                 pushToast(res.data.message, "success")
                 navigate("/app")
