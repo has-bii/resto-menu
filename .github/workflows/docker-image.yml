@@ -41,7 +41,7 @@ jobs:
         needs: build
 
         steps:
-            - name: SSH & Docker run Backend
+            - name: SSH & Docker Compose
               uses: appleboy/ssh-action@v1.0.0
               with:
                   host: ${{ secrets.SSH_HOST }}
@@ -49,19 +49,4 @@ jobs:
                   key: ${{ secrets.SSH_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   script: |
-                      docker stop MenuRestoBE || true
-                      docker rm MenuRestoBE || true
-                      docker run --name MenuRestoBE --network db-network --restart=always -p 3000:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} -e FE_URL=${{ secrets.FE_URL }} -d hasbii/resto-menu-be:latest
-                      docker exec MenuRestoBE npx prisma migrate deploy
-
-            - name: SSH & Docker run Frontend
-              uses: appleboy/ssh-action@v1.0.0
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SERVER_USERNAME }}
-                  key: ${{ secrets.SSH_KEY }}
-                  port: ${{ secrets.SSH_PORT }}
-                  script: |
-                      docker stop MenuRestoFE || true
-                      docker rm MenuRestoFE || true
-                      docker run --name MenuRestoFE --restart=always -p 82:80 -e VITE_API_URL=${{ secrets.API_URL }} -d hasbii/resto-menu-fe:latest
+                      cd ${{ secrets.PATH }} && docker compose down && docker compose up -d
