@@ -16,8 +16,7 @@ interface IUserRegister extends IUserReq {
 
 interface ICookieOptions {
     secure: boolean
-    sameSite: boolean
-    httpOnly?: boolean
+    domain: string
     expires?: Date
 }
 
@@ -100,7 +99,7 @@ class AuthController {
             // Create Token Option
             const cookieOptions: ICookieOptions = {
                 secure: true,
-                sameSite: true,
+                domain: env.FE_URL
             }
 
             // Add expire to the token
