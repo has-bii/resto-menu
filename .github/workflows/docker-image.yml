@@ -48,4 +48,4 @@ jobs:
                   key: ${{ secrets.SSH_KEY }}
                   port: ${{ secrets.SSH_PORT }}
                   script: |
-                      cd ${{ secrets.PATH }} && docker compose down && (docker image rm hasbii/resto-menu-fe:latest || true) && (docker image rm hasbii/resto-menu-be:latest || true) && docker compose up -d
+                      cd ${{ secrets.PATH }} && docker compose down && (docker image rm hasbii/resto-menu-fe:latest || true) && (docker image rm hasbii/resto-menu-be:latest || true) && docker exec RestoMenuBE npx prisma migrate deploy
